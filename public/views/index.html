@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+  <html>
+    <head>
+        
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <title>Did you know...</title>
+      
+      <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css"/>
+      <link rel="stylesheet" href="assets/css/app.css"/>
+    </head>
+    <body ng-app="triviaApp" ng-controller="mainCtrl" class="{{color}} lighten-1">
+        <header>
+            <div class="col m3 l3 right">
+              <a class="waves-effect waves-light btn-flat white-text" ng-click="iLikeIt()"><i class="material-icons left">thumb_up</i>{{liked === true ? 'Liked': 'Like it?'}}</a>
+            </div>
+            <div class="container">
+                 <div class="row">
+                     <div class="col m9 l9">
+                         <h2 class="white-text">Did you know?</h2>
+                         <a class="waves-effect waves-light dropdown-button btn-flat {{color}} darken-2 white-text" data-activates='languages' >Facts in {{selectedLanguage.name}}</a>
+                         <ul id='languages' class='dropdown-content'>
+                            <li ng-repeat="language in supportedLanguages"><a ng-click="selectLanguage(language)">{{language.name}}</a></li>
+                          </ul>
+                     </div>
+                 </div>
+            </div>
+        </header>
+        <main class="valign-wrapper">
+            <div class="container valign">
+                 <div class="row">
+                     <div class="col s12 m12 l12 center">
+                        <p class="white-text" ng-if="!isLoading">{{fact}}</p>
+                        <p class="white-text" ng-if="!isLoading && selectedLanguage.code != 'en'" style="font-size:9px;" >Powered by Yandex.Translate</p>
+                        <loader></loader>
+                     </div>
+                 </div>
+            </div>
+            <div class="fixed-action-btn" style="bottom: 45px; right: 24px;">
+                <a class="btn-floating btn-large waves-effect waves-light {{color}}" ng-click="refreshFact()">
+                  <i class="large material-icons">refresh</i>
+                </a>
+            </div>
+        </main>
+        
+        <footer class="page-footer {{color}} darken-2">
+          <div class="container">
+            <div class="row">
+              <div class="col l6 s12">
+                <h5 class="white-text">This page was made with love and boredom</h5>
+              </div>
+              <div class="col l4 offset-l2 s12">
+                <h5 class="white-text">About</h5>
+                <ul>
+                  <li><a class="grey-text text-lighten-3" href="mailto:alvarolock@gmail.com">Contact</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="footer-copyright">
+            <div class="container">
+            © 2016 Copyright Alvaro Lockhart
+            </div>
+          </div>
+        </footer>
+        
+        <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular-cookies.min.js"></script>
+        
+        <script src="assets/js/bundle.js"></script>
+    </body>
+  </html>
