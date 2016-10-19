@@ -77,6 +77,7 @@
 	angular.module('triviaApp')
 	.controller('mainCtrl', function($scope, coreService, languageService){
 	    $scope.fact;
+	    
 	    $scope.liked = coreService.getLiked();
 	    $scope.color = 'blue';
 	    $scope.isLoading;
@@ -88,22 +89,32 @@
 	        $scope.isLoading = true;
 	        coreService.getFacts()
 	            .success(function(data){
+	                var fact = {
+	                    value: data.text,
+	                    lang: 'en'
+	                };
+	                
 	                if($scope.selectedLanguage.code === 'en'){
 	                    $scope.isLoading = false;
-	                    setFact(data.text);
+	                    setFact(fact, true);
 	                }else{
-	                    languageService.translate(data.text, $scope.selectedLanguage.code)
+	                    languageService.translate(fact, $scope.selectedLanguage.code)
 	                        .success(function(dataTranslated){
 	                            $scope.isLoading = false;
-	                            setFact(dataTranslated.text[0]);
+	                            setFact({
+	                                value: dataTranslated.text[0],
+	                                lang: $scope.selectedLanguage.code
+	                            }, true);
 	                        });
 	                }
 	            });
 	    }
 	    
-	    function setFact(fact){
+	    function setFact(fact, changeColor){
 	        $scope.fact = fact;
-	        $scope.color = coreService.getRandomColor();
+	        if(changeColor){
+	            $scope.color = coreService.getRandomColor();
+	        }
 	    }
 	    
 	    $scope.iLikeIt = function(){
@@ -118,8 +129,13 @@
 	    $scope.selectLanguage = function(language){
 	        $scope.selectedLanguage = language;
 	        languageService.saveSelectedLanguage(language);
-	        
-	        makeToast("Changes will show when new facts", 3);
+	        languageService.translate($scope.fact, language.code)
+	            .success(function(dataTranslated){
+	                setFact({
+	                    value: dataTranslated.text[0],
+	                    lang: $scope.selectedLanguage.code
+	                }, false);
+	            });
 	    }
 	    
 	    function makeToast(message, time){
@@ -143,7 +159,7 @@
 	angular.module('triviaApp')
 	.directive('loader', function(){
 	    return {
-	        templateUrl: 'views/templates/loader.html',
+	        templateUrl: 'templates/loader.html',
 	        replace: true
 	    };
 	});
@@ -197,7 +213,7 @@
 	'use strict'
 
 	angular.module('triviaApp')
-	.constant('translateUrl', 'https://translate.yandex.net/api/v1.5/tr.json/translate?key={0}&text={1}&lang=en-{2}&[callback=JSON]')
+	.constant('translateUrl', 'https://translate.yandex.net/api/v1.5/tr.json/translate?key={0}&text={1}&lang={2}-{3}&[callback=JSON]')
 	.constant('yandexTranlateApiKey', 'trnsl.1.1.20161018T172437Z.81ae07a7901a9f77.945a1edf3d86891a939cdf2e6358442ac5810d28')
 	.factory('languageService', function($http, $cookieStore, yandexTranlateApiKey, translateUrl){
 	    return {
@@ -218,7 +234,7 @@
 	        translate: function(fact, target){
 	            return $http({
 	                method: 'GET',
-	                url: translateUrl.format(yandexTranlateApiKey, fact, target)
+	                url: translateUrl.format(yandexTranlateApiKey, fact.value, fact.lang, target)
 	            });
 	        },
 	        getSelectedLangague: function(){

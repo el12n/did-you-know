@@ -3,6 +3,7 @@
 angular.module('triviaApp')
 .controller('mainCtrl', function($scope, coreService, languageService){
     $scope.fact;
+    
     $scope.liked = coreService.getLiked();
     $scope.color = 'blue';
     $scope.isLoading;
@@ -14,22 +15,32 @@ angular.module('triviaApp')
         $scope.isLoading = true;
         coreService.getFacts()
             .success(function(data){
+                var fact = {
+                    value: data.text,
+                    lang: 'en'
+                };
+                
                 if($scope.selectedLanguage.code === 'en'){
                     $scope.isLoading = false;
-                    setFact(data.text);
+                    setFact(fact, true);
                 }else{
-                    languageService.translate(data.text, $scope.selectedLanguage.code)
+                    languageService.translate(fact, $scope.selectedLanguage.code)
                         .success(function(dataTranslated){
                             $scope.isLoading = false;
-                            setFact(dataTranslated.text[0]);
+                            setFact({
+                                value: dataTranslated.text[0],
+                                lang: $scope.selectedLanguage.code
+                            }, true);
                         });
                 }
             });
     }
     
-    function setFact(fact){
+    function setFact(fact, changeColor){
         $scope.fact = fact;
-        $scope.color = coreService.getRandomColor();
+        if(changeColor){
+            $scope.color = coreService.getRandomColor();
+        }
     }
     
     $scope.iLikeIt = function(){
@@ -44,8 +55,13 @@ angular.module('triviaApp')
     $scope.selectLanguage = function(language){
         $scope.selectedLanguage = language;
         languageService.saveSelectedLanguage(language);
-        
-        makeToast("Changes will show when new facts", 3);
+        languageService.translate($scope.fact, language.code)
+            .success(function(dataTranslated){
+                setFact({
+                    value: dataTranslated.text[0],
+                    lang: $scope.selectedLanguage.code
+                }, false);
+            });
     }
     
     function makeToast(message, time){

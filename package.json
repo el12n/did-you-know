@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "nodemon",
+    "webpack": "webpack"
   },
   "keywords": [
     "facts",
@@ -15,7 +16,9 @@
   "license": "MIT",
   "dependencies": {
     "express": "",
-    "ejs": ""
+    "ejs": "",
+    "webpack": "",
+    "nodemon":""
   },
   "engines": {
     "node": "<5"

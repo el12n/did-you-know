@@ -30,8 +30,8 @@
             <div class="container valign">
                  <div class="row">
                      <div class="col s12 m12 l12 center">
-                        <p class="white-text" ng-if="!isLoading">{{fact}}</p>
-                        <p class="white-text" ng-if="!isLoading && selectedLanguage.code != 'en'" style="font-size:9px;" >Powered by Yandex.Translate</p>
+                        <p class="white-text" ng-if="!isLoading">{{fact.value}}</p>
+                        <p class="white-text" ng-if="!isLoading && fact.lang != 'en'" style="font-size:9px;" >Powered by Yandex.Translate</p>
                         <loader></loader>
                      </div>
                  </div>
