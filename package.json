@@ -1,0 +1,21 @@
+{
+  "name": "did-you-know",
+  "version": "1.0.0",
+  "description": "Application to generate fun facts.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "facts",
+    "fun"
+  ],
+  "author": "Alvaro Lockhart",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.9.8"
+  },
+  "engines": {
+    "node": "4.1.1"
+  }
+}
