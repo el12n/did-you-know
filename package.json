@@ -18,7 +18,9 @@
     "express": "",
     "ejs": "",
     "webpack": "",
-    "nodemon":""
+    "nodemon":"",
+    "request":"",
+    "request-promise":""
   },
   "engines": {
     "node": "<5"

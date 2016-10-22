@@ -13,7 +13,7 @@ angular.module('triviaApp')
     
     $scope.refreshFact = function(){
         $scope.isLoading = true;
-        coreService.getFacts()
+        coreService.getFacts($scope.selectedLanguage.code)
             .success(function(data){
                 var fact = {
                     value: data.text,
@@ -25,12 +25,9 @@ angular.module('triviaApp')
                     setFact(fact, true);
                 }else{
                     languageService.translate(fact, $scope.selectedLanguage.code)
-                        .success(function(dataTranslated){
+                        .success(function(fact){
                             $scope.isLoading = false;
-                            setFact({
-                                value: dataTranslated.text[0],
-                                lang: $scope.selectedLanguage.code
-                            }, true);
+                            setFact(fact, true);
                         });
                 }
             });
@@ -56,11 +53,8 @@ angular.module('triviaApp')
         $scope.selectedLanguage = language;
         languageService.saveSelectedLanguage(language);
         languageService.translate($scope.fact, language.code)
-            .success(function(dataTranslated){
-                setFact({
-                    value: dataTranslated.text[0],
-                    lang: $scope.selectedLanguage.code
-                }, false);
+            .success(function(fact){
+                setFact(fact, false);
             });
     }
     

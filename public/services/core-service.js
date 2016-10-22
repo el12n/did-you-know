@@ -1,13 +1,14 @@
 'use strict'
 
 angular.module('triviaApp')
-.constant('baseApiUrl', 'http://numbersapi.com/random/trivia?json')
+.constant('baseApiUrl',  $window.location.pathname+'/api/fact')
 .factory('coreService', function($http, $cookieStore, baseApiUrl){
     return {
-        getFacts: function(){
+        getFacts: function(lang){
+            var finalUrl = lang.code === 'en' ? baseApiUrl : baseApiUrl+"?lang="+lang.code;
             return $http({
                 method:'GET',
-                url: baseApiUrl
+                url: finalUrl
             })
         },
         getRandomColor: function(){
