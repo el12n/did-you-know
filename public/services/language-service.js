@@ -1,7 +1,7 @@
 'use strict'
 
 angular.module('triviaApp')
-.constant('translateUrl', $window.location.pathname+'/api/translate?value={0}&lang={1}&target={2}')
+.constant('translateUrl','/api/translate?value={0}&lang={1}&target={2}')
 .factory('languageService', function($http, $cookieStore, translateUrl){
     return {
         supportedLanguages: [

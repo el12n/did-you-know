@@ -13,23 +13,10 @@ angular.module('triviaApp')
     
     $scope.refreshFact = function(){
         $scope.isLoading = true;
-        coreService.getFacts($scope.selectedLanguage.code)
+        coreService.getFacts($scope.selectedLanguage)
             .success(function(data){
-                var fact = {
-                    value: data.text,
-                    lang: 'en'
-                };
-                
-                if($scope.selectedLanguage.code === 'en'){
-                    $scope.isLoading = false;
-                    setFact(fact, true);
-                }else{
-                    languageService.translate(fact, $scope.selectedLanguage.code)
-                        .success(function(fact){
-                            $scope.isLoading = false;
-                            setFact(fact, true);
-                        });
-                }
+                $scope.isLoading = false;
+                setFact(data, true);
             });
     }
     

@@ -87,26 +87,10 @@
 	    
 	    $scope.refreshFact = function(){
 	        $scope.isLoading = true;
-	        coreService.getFacts()
+	        coreService.getFacts($scope.selectedLanguage)
 	            .success(function(data){
-	                var fact = {
-	                    value: data.text,
-	                    lang: 'en'
-	                };
-	                
-	                if($scope.selectedLanguage.code === 'en'){
-	                    $scope.isLoading = false;
-	                    setFact(fact, true);
-	                }else{
-	                    languageService.translate(fact, $scope.selectedLanguage.code)
-	                        .success(function(dataTranslated){
-	                            $scope.isLoading = false;
-	                            setFact({
-	                                value: dataTranslated.text[0],
-	                                lang: $scope.selectedLanguage.code
-	                            }, true);
-	                        });
-	                }
+	                $scope.isLoading = false;
+	                setFact(data, true);
 	            });
 	    }
 	    
@@ -130,11 +114,8 @@
 	        $scope.selectedLanguage = language;
 	        languageService.saveSelectedLanguage(language);
 	        languageService.translate($scope.fact, language.code)
-	            .success(function(dataTranslated){
-	                setFact({
-	                    value: dataTranslated.text[0],
-	                    lang: $scope.selectedLanguage.code
-	                }, false);
+	            .success(function(fact){
+	                setFact(fact, false);
 	            });
 	    }
 	    
@@ -171,13 +152,14 @@
 	'use strict'
 
 	angular.module('triviaApp')
-	.constant('baseApiUrl', 'http://numbersapi.com/random/trivia?json')
+	.constant('baseApiUrl','/api/fact')
 	.factory('coreService', function($http, $cookieStore, baseApiUrl){
 	    return {
-	        getFacts: function(){
+	        getFacts: function(lang){
+	            var finalUrl = lang.code === 'en' ? baseApiUrl : baseApiUrl+"?lang="+lang.code;
 	            return $http({
 	                method:'GET',
-	                url: baseApiUrl
+	                url: finalUrl
 	            })
 	        },
 	        getRandomColor: function(){
@@ -213,9 +195,8 @@
 	'use strict'
 
 	angular.module('triviaApp')
-	.constant('translateUrl', 'https://translate.yandex.net/api/v1.5/tr.json/translate?key={0}&text={1}&lang={2}-{3}&[callback=JSON]')
-	.constant('yandexTranlateApiKey', 'trnsl.1.1.20161018T172437Z.81ae07a7901a9f77.945a1edf3d86891a939cdf2e6358442ac5810d28')
-	.factory('languageService', function($http, $cookieStore, yandexTranlateApiKey, translateUrl){
+	.constant('translateUrl','/api/translate?value={0}&lang={1}&target={2}')
+	.factory('languageService', function($http, $cookieStore, translateUrl){
 	    return {
 	        supportedLanguages: [
 	                { 
@@ -234,7 +215,7 @@
 	        translate: function(fact, target){
 	            return $http({
 	                method: 'GET',
-	                url: translateUrl.format(yandexTranlateApiKey, fact.value, fact.lang, target)
+	                url: translateUrl.format(fact.value, fact.lang, target)
 	            });
 	        },
 	        getSelectedLangague: function(){

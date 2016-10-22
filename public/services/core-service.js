@@ -1,7 +1,7 @@
 'use strict'
 
 angular.module('triviaApp')
-.constant('baseApiUrl',  $window.location.pathname+'/api/fact')
+.constant('baseApiUrl','/api/fact')
 .factory('coreService', function($http, $cookieStore, baseApiUrl){
     return {
         getFacts: function(lang){
