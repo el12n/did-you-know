@@ -23,7 +23,7 @@ angular.module('triviaApp')
     function setFact(fact, changeColor){
         $scope.fact = fact;
         if(changeColor){
-            $scope.color = coreService.getRandomColor();
+           $scope.color = coreService.getRandomColor().name;
         }
     }
     
@@ -50,6 +50,7 @@ angular.module('triviaApp')
     }
     
     var init = function(){
+        coreService.getColors();
         $scope.refreshFact();
     };
     
